@@ -1,0 +1,104 @@
+{% extends "core/base.html" %}
+{% block title %}
+Mis Citas
+{% endblock %}
+
+{% load tz %} <!-- Importar la zona horaria -->
+{% load i18n %} <!-- Importar la internacionalización -->
+
+{% load static %}
+
+{% block content %}
+
+<section class="border-top border-secondary">
+    <h1 class="bg-dark text-light text-center p-3">Mis citas</h1>
+</section>
+
+{% language 'es' %} <!-- Establecer el idioma en español -->
+
+<!-- Cargamos los mensajes flash que enviamos en otras peticiones si los hay -->
+
+{% if messages %}
+{% for message in messages %}
+<section class="container-fluid text-center alert alert-{{ message.tags }}">
+    {{ message }}
+</section>
+{% endfor %}
+{% endif %}
+
+<!-- Advertencia sobre cancelaciones -->
+
+<div id="advertencia" class="container mt-3 mb-5">
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">Advertencia</h4>
+        <p>Recuerde! Cualquier cancelación está sujeta a las condiciones establecidas por los profesionales. En caso de
+            no especificarse nada, el período de cancelación
+            gratuita es de 48 horas antes de la consulta.
+        </p>
+        <hr>
+        <p class="mb-0">Términos y condiciones de cancelación: <a href="{% url 'politica_cancelaciones' %}"
+                class="text-dark text-decoration-none"><strong>Ver
+                    enlace</strong></a></p>
+    </div>
+</div>
+
+<!-- En caso de que existan citas para el usuario -->
+
+{% if citas %}
+
+<div class="accordion container mt-3">
+    {% for cita in citas %}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#cita{{cita.id}}">
+                {{cita.profesional.nombre}} {{cita.profesional.apellidos}} -
+                {{cita.fecha_cita}}<br>{{cita.profesional.campo}}
+            </button>
+        </h2>
+        <div id="cita{{cita.id}}" class="accordion-collapse collapse show row mb-3" data-bs-parent="#cita{{cita.id}}">
+            <div class="accordion-body col-8">
+                <p><strong>Motivo de la cita: </strong>{{cita.descripcion}}</p>
+                <p><strong>Especialidades:</strong>
+                <ul class="list-group">{% for especialidad in cita.profesional.especialidad.all %}
+                    <li class="list-group-item">{{especialidad | capfirst}}</li>
+                    {% endfor %}
+                </ul>
+                </p>
+            </div>
+            <div class="col-4 mt-3">
+                <strong>Precio: {{cita.precio}}€</strong><br>
+                <strong>Estado: {{cita.get_estado_display}}</strong>
+                <form method="post" action="{% url 'anular_cita' cita.id %}" class="text-center">
+                    {% csrf_token %}
+                    <div class="alert alert-danger mt-3 m" role="alert">
+                        <span>Si tiene cualquier problema con la cita o desea anularla pulse en el siguiente
+                            botón:</span><br>
+                        <button class="btn btn-danger mt-3">Anular Cita</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- En caso de que no existan citas para el usuario -->
+
+    {% else %}
+    <section class="container">
+        <div class="row">
+            <img src="{% static 'img/imagenCitas2.svg' %}" class="img-fluid col-4" alt="Imagen graciosa citas">
+            <div class="container-fluid full-height d-flex justify-content-center align-items-center col-8">
+                <div class="col-8 d-flex flex-column align-items-center">
+                    <h4 class="text-center fs-1 fs-lg-5">Actualmente no hay ninguna cita activa</h4>
+                    <div class="container text-center mt-3">
+                        <a href="{% url 'homepage' %}" class="btn btn-success">Ver profesionales</a><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% endif %}
+    {% endlanguage %}
+
+    {% endblock %}

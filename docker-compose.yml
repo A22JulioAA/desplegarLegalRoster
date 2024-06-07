@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=legal_roster_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  
+  django_app:
+    build: .
+    volumes:
+      - static:/app/static
+      - .:/app
+    depends_on:
+      - db
+    restart: always
+  
+  nginx:
+    image: nginx:1.21.3
+    ports:
+      - 8000:80
+    volumes:
+      - ./config/nginx/conf.d:/etc/nginx/conf.d
+      - static:/app/static
+    depends_on:
+      - django_app
+
+volumes:
+  .:
+  postgres_data:
+  static:

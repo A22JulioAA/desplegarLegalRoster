@@ -1,0 +1,72 @@
+{% extends "core/base.html" %}
+{% block title %}
+Agendar Cita
+{% endblock %}
+
+{% load tz %} <!-- Importar la zona horaria -->
+{% load i18n %} <!-- Importar la internacionalización -->
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<section class="border-top border-secondary">
+    <h1 class="bg-dark text-light text-center p-3">RESERVA TU CITA AHORA!</h1>
+</section>
+
+{% language 'es' %} <!-- Establecer el idioma en español -->
+
+<!-- Aviso sobre el motivo de la cita -->
+<div id="advertencia-citas" class="container mt-3">
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">Aviso</h4>
+        <p>Porfavor, sea claro y conciso con el motivo de la cita. El profesional valorará la viabilidad
+            de la consulta y tendrá el derecho de aceptarla o rechazarla. En cualquier caso se le informará
+            mediante su correo electrónico.
+        </p>
+        <hr>
+        <p class="mb-0">Si solamente quiere obtener información, envíe un email a: <a
+                href="mailto:{{profesional.email}}" class="text-dark">{{profesional.email}}</a></p>
+    </div>
+</div>
+
+{% if error %}
+<div id="error-time" class="container mt-3 text-center">
+    <div class="alert alert-danger" role="alert">
+        <p>
+            {{ error }}
+        </p>
+    </div>
+</div>
+{% endif %}
+
+<!-- Formulario para agendar una cita -->
+
+<form method='POST' class="container mt-3">
+    {% csrf_token %}
+
+    <div class="card">
+        <h2 class="card-title bg-dark text-light p-3 rounded-top text-center">Cita con:
+            {{profesional.nombre}}
+            {{profesional.apellidos}}</h2>
+        <div class="card-body">
+
+            {{ form | crispy }}
+
+            <div class="row mb-3">
+                <h5 class="col-6 text-end">Precio Consulta:</h5>
+                <h5 class="col-6">{{profesional.precio_consulta}}€</h5>
+            </div>
+
+            <div class="row">
+                <input class="btn btn-dark float-end col-12" type="submit" value="Reservar">
+            </div>
+        </div>
+    </div>
+</form>
+
+<br>
+
+{% endlanguage %}
+
+{% endblock %}

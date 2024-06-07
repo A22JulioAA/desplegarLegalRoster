@@ -1,0 +1,23 @@
+.fc-toolbar-title {
+    font-weight: bold;
+}
+
+.fc-toolbar-title::first-letter {
+    text-transform: capitalize;
+}
+
+.fc-daygrid-day-number {
+    color: black;
+}
+
+.fc-col-header {
+    color: black; 
+}
+
+.fc-header-toolbar {
+    font-size: 14px; 
+}
+
+.fc-header-toolbar button {
+    font-size: 12px; 
+}
