@@ -82,7 +82,7 @@ INTERNAL_IPS = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']
+CSRF_TRUSTED_ORIGINS = ['https://legalroster.mywire.org', 'http://legalroster.mywire.org:8000', 'http://localhost:8000']
 
 
 ROOT_URLCONF = 'legal_code.urls'
